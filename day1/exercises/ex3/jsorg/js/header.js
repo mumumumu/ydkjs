@@ -1,6 +1,7 @@
-var Header = (function() {
+$(document).ready(function() {
+	$modal = $("[rel='js-modal']");
 
-	function headerLinkClicks(evt) {
+	$("[rel='js-controls']").on("click", "[rel*='js-']", function(evt) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		evt.stopImmediatePropagation();
@@ -11,21 +12,5 @@ var Header = (function() {
 		.then(function(contents){
 			$modal.html(contents).show();
 		});
-	}
-
-	function init() {
-		$modal = $("[rel='js-modal']");
-
-		$("[rel='js-controls']").on("click","[rel*='js-']",headerLinkClicks);
-	}
-
-	EVT.on("init",init);
-
-	var $modal;
-
-	return {
-		init: init
-	};
-
-})();
-
+    });
+});
