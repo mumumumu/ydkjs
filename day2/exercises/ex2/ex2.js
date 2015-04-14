@@ -1,4 +1,13 @@
-$("#p1 > em, .p > strong > em").each(function(){
+var parents = [
+    "#p1",
+    ".p > strong"
+];
+
+// -------
+
+var $context = $(parents.join(","));
+
+$context.children("em").each(function(){
 	$(this)
 	.addClass("highlighted")
 	.attr({
