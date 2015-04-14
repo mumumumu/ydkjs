@@ -1,6 +1,15 @@
-var Carousel = (function(){
+$(document).ready(function() {
+    var $content = $("[rel=js-carousel] > [rel=js-content]");
+    var $items = $content.children("[rel=js-items]");
+    var $left = $("[rel=js-carousel] > [rel=js-controls] > [rel=js-left]");
+    var $right = $("[rel=js-carousel] > [rel=js-controls] > [rel=js-right]");
 
-	function scrollLeft(evt) {
+    var contentWidth = $content.width();
+    var itemsWidth = $items.width();
+    var position = 0;
+    var maxPosition = (itemsWidth - contentWidth);
+
+    $left.on("click", function(evt) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		evt.stopImmediatePropagation();
@@ -10,9 +19,9 @@ var Carousel = (function(){
 		}
 
 		$items.css({ left: (-position) + "px" });
-	}
+    });
 
-	function scrollRight(evt){
+    $right.on("click", function(evt) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		evt.stopImmediatePropagation();
@@ -22,38 +31,6 @@ var Carousel = (function(){
 		}
 
 		$items.css({ left: (-position) + "px" });
-	}
+    });
 
-	function clickPerson(evt) {
-		var ID = $(evt.target).attr("rel").replace(/^.*(\d+)$/,"$1");
-
-		EVT.emit("person-selected",ID);
-	}
-
-	function init() {
-		$content = $("[rel=js-carousel] > [rel=js-content]");
-		$items = $content.children("[rel=js-items]");
-		$left = $("[rel=js-carousel] > [rel=js-controls] > [rel=js-left]");
-		$right = $("[rel=js-carousel] > [rel=js-controls] > [rel=js-right]");
-
-		contentWidth = $content.width();
-		itemsWidth = $items.width();
-		position = 0;
-		maxPosition = (itemsWidth - contentWidth);
-
-		$left.on("click",scrollLeft);
-		$right.on("click",scrollRight);
-
-		$items.on("click","[rel*='js-item-']",clickPerson);
-	}
-
-	var $content, $items, $left, $right,
-		contentWidth, itemsWidth, position, maxPosition;
-
-	EVT.on("init",init);
-
-	return {
-		init: init
-	};
-
-})();
+});

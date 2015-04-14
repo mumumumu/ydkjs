@@ -1,3 +1,7 @@
+$(document).ready(function() {
+
+});
+
 var Details = (function(){
 
 	function loadPerson(ID){
