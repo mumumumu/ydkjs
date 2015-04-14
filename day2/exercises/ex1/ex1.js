@@ -7,11 +7,11 @@ var obj = {
 	f: false
 };
 
-if (obj.c == true) {
-	obj.f = obj.d.val / obj.b;
+if (!!obj.c) {
+	obj.f = !!(obj.d.val / +obj.b);
 }
 
-obj.a = (obj.b * obj.c) + obj.e();
+obj.a = (+obj.b * obj.c[0]) + +obj.e();
 
 console.log(JSON.stringify(obj));
 // should be:
