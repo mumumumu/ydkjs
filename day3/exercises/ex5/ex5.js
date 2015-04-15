@@ -1,88 +1,105 @@
-// assume this data came from the database
-var notes = [
-	"This is the first note I've taken!",
-	"Now is the time for all good men to come to the aid of their country.",
-	"The quick brown fox jumped over the moon."
-];
+var NotesManager = (function IIFE() {
 
-function addNote(note) {
-	$("#notes").prepend(
-		$("<a href='#'></a>")
-		.addClass("note")
-		.text(note)
-	);
-}
+    var notes = [];
 
-function addCurrentNote() {
-	var current_note = $("#note").val();
+    function init() {
+        var $notes = $("#notes");
 
-	if (current_note) {
-		notes.push(current_note);
-		addNote(current_note);
-		$("#note").val("");
-	}
-}
+        // build the list from the "database"
+        var html = "";
+        for (i=0; i<notes.length; i++) {
+            html += "<a href='#' class='note'>" + notes[i] + "</a>";
+        }
+        $notes.html(html);
 
-function showHelp() {
-	$("#help").show();
+        // listen to "help" button
+        $("#open_help").bind("click",function(evt){
+            if (!$("#help").is(":visible")) {
+                showHelp();
+            }
+        });
 
-	document.addEventListener("click",function __handler__(evt){
-		document.removeEventListener("click",__handler__,true);
-		hideHelp();
-		evt.preventDefault();
-		evt.stopPropagation();
-		evt.stopImmediatePropagation();
-	},true);
-}
+        // listen to "add" button
+        $("#add_note").bind("click",function(evt){
+            addCurrentNote();
+        });
 
-function hideHelp() {
-	$("#help").hide();
-}
+        // listen for <enter> in text box
+        $("#note").bind("keypress",function(evt){
+            if (evt.which == 13) {
+                addCurrentNote();
+            }
+        });
 
-function init() {
-	var $notes = $("#notes");
+        // listen for clicks outside the notes box
+        $(document).bind("click",function(evt){
+            $notes.removeClass("active");
+            $notes.children(".note").removeClass("highlighted");
+        });
 
-	// build the list from the "database"
-	var html = "";
-	for (i=0; i<notes.length; i++) {
-		html += "<a href='#' class='note'>" + notes[i] + "</a>";
-	}
-	$notes.html(html);
+        // listen for clicks on note elements
+        $notes.on("click",".note",function(evt){
+            $notes.addClass("active");
+            $notes.children(".note").removeClass("highlighted");
+            $(evt.target).addClass("highlighted");
 
-	// listen to "help" button
-	$("#open_help").bind("click",function(evt){
-		if (!$("#help").is(":visible")) {
-			showHelp();
-		}
-	});
+            evt.preventDefault();
+            evt.stopPropagation();
+        });
+    }
 
-	// listen to "add" button
-	$("#add_note").bind("click",function(evt){
-		addCurrentNote();
-	});
+    function addNote(note) {
+        $("#notes").prepend(
+            $("<a href='#'></a>")
+            .addClass("note")
+            .text(note)
+        );
+    }
 
-	// listen for <enter> in text box
-	$("#note").bind("keypress",function(evt){
-		if (evt.which == 13) {
-			addCurrentNote();
-		}
-	});
+    function addCurrentNote() {
+        var current_note = $("#note").val();
 
-	// listen for clicks outside the notes box
-	$(document).bind("click",function(evt){
-		$notes.removeClass("active");
-		$notes.children(".note").removeClass("highlighted");
-	});
+        if (current_note) {
+            notes.push(current_note);
+            addNote(current_note);
+            $("#note").val("");
+        }
+    }
 
-	// listen for clicks on note elements
-	$notes.on("click",".note",function(evt){
-		$notes.addClass("active");
-		$notes.children(".note").removeClass("highlighted");
-		$(evt.target).addClass("highlighted");
+    function showHelp() {
+        $("#help").show();
 
-		evt.preventDefault();
-		evt.stopPropagation();
-	});
-}
+        document.addEventListener("click",function __handler__(evt){
+            document.removeEventListener("click",__handler__,true);
+            hideHelp();
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.stopImmediatePropagation();
+        },true);
+    }
 
-$(document).ready(init);
+    function hideHelp() {
+        $("#help").hide();
+    }
+
+    function loadNotes(initialNotes) {
+        notes = notes.concat(initialNotes);
+    }
+
+    var PublicAPI = {
+        init: init,
+        loadNotes: loadNotes
+    }
+
+    return PublicAPI;
+})();
+
+NotesManager.loadNotes([
+    "This is the first note I've taken!",
+    "Now is the time for all good men to come to the aid of their country.",
+    "The quick brown fox jumped over the moon."
+]);
+
+$(document).ready(function() {
+    NotesManager.init();
+});
